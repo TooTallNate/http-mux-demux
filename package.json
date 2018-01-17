@@ -1,0 +1,14 @@
+{
+  "name": "http-mux-demux",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "http-mux": "./http-mux.js",
+    "http-demux": "./http-demux.js"
+  },
+  "author": "Nathan Rajlich <n@n8.io>",
+  "license": "MIT",
+  "dependencies": {
+    "async-listen": "^1.0.0"
+  }
+}
