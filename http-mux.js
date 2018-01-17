@@ -8,21 +8,21 @@
 const net = require('net');
 const http = require('http');
 const listen = require('async-listen');
+const debug = require('debug')('http-mux');
+const { debugStream } = require('./util');
 
 async function main() {
   const server = http.createServer((req, res) => {
-    //req.setNoDelay(true);
-    req.on('error', err => console.log('req error', err));
-    res.on('error', err => console.log('res error', err));
+    req.on('error', err => debug('req error %o', err));
+    res.on('error', err => debug('res error %o', err));
     if (req.method == 'POST') {
-      console.log(req);
       const socket = net.connect({ port: 6379 });
-      socket.on('error', err => console.log('socket error', err));
+      socket.on('error', err => debug('socket error %o', err));
       res.writeHead(200);
+      debugStream(debug, 'req', req);
       req.pipe(socket);
-      req.pipe(process.stdout);
+      debugStream(debug, 'socket', socket);
       socket.pipe(res);
-      socket.pipe(process.stdout);
     } else {
       res.statusCode = 404;
       res.end();

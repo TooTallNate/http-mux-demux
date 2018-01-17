@@ -9,6 +9,8 @@
   "author": "Nathan Rajlich <n@n8.io>",
   "license": "MIT",
   "dependencies": {
-    "async-listen": "^1.0.0"
+    "args": "^3.0.8",
+    "async-listen": "^1.0.0",
+    "split2": "^2.2.0"
   }
 }
