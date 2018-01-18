@@ -9,10 +9,12 @@ const net = require('net');
 const http = require('http');
 const listen = require('async-listen');
 const debug = require('debug')('http-mux');
+const websocket = require('websocket-stream');
 const { debugStream } = require('./util');
 
 async function main() {
   const server = http.createServer((req, res) => {
+    /*
     req.on('error', err => debug('req error %o', err));
     res.on('error', err => debug('res error %o', err));
     if (req.method == 'POST') {
@@ -24,28 +26,23 @@ async function main() {
       req.pipe(socket);
       debugStream(debug, 'socket', socket);
       socket.pipe(res);
-    } else {
-      res.statusCode = 404;
-      res.end();
     }
+    */
+    res.statusCode = 404;
+    res.end();
   });
-  server.on('upgrade', (req, socket, head) => {
-    socket.write(
-      'HTTP/1.1 101 http-mux-demux Protocol Handshake\r\n' +
-        'Upgrade: http-mux-demux\r\n' +
-        'Connection: Upgrade\r\n' +
-        '\r\n'
-    );
-
-    const upstream = net.connect({ port: 6379 });
-    upstream.once('connect', () => debug('upstream connected'));
-    upstream.on('error', err => debug('upstream error %o', err));
-    upstream.write(head);
+  const wss = websocket.createServer({
+    //perMessageDeflate: false,
+    server
+  }, ws => {
+    const socket = net.connect({ port: 6379 });
+    socket.once('connect', () => debug('socket connected'));
+    socket.on('error', err => debug('socket error %o', err));
+    socket.pipe(ws);
+    ws.pipe(socket);
+    debugStream(debug, 'ws', ws);
     debugStream(debug, 'socket', socket);
-    socket.pipe(upstream);
-    debugStream(debug, 'upstream', upstream);
-    upstream.pipe(socket);
-  });
+  })
   const addr = await listen(server, 3000);
   console.log(addr);
 }
