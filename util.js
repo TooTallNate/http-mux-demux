@@ -5,7 +5,10 @@ module.exports = {
 };
 
 function debugStream(debug, name, stream) {
-  stream.pipe(split()).on('data', line => {
-    debug('%s: %s', name, line);
-  });
+  stream
+    .pipe(split())
+    .on('data', line => {
+      debug('%s: %s', name, line);
+    })
+    .on('end', () => debug('stream %s "end" event', name));
 }

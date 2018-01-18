@@ -17,6 +17,7 @@ async function main() {
     res.on('error', err => debug('res error %o', err));
     if (req.method == 'POST') {
       const socket = net.connect({ port: 6379 });
+      socket.once('connect', () => debug('socket connected'));
       socket.on('error', err => debug('socket error %o', err));
       res.writeHead(200);
       debugStream(debug, 'req', req);
@@ -27,6 +28,23 @@ async function main() {
       res.statusCode = 404;
       res.end();
     }
+  });
+  server.on('upgrade', (req, socket, head) => {
+    socket.write(
+      'HTTP/1.1 101 http-mux-demux Protocol Handshake\r\n' +
+        'Upgrade: http-mux-demux\r\n' +
+        'Connection: Upgrade\r\n' +
+        '\r\n'
+    );
+
+    const upstream = net.connect({ port: 6379 });
+    upstream.once('connect', () => debug('upstream connected'));
+    upstream.on('error', err => debug('upstream error %o', err));
+    upstream.write(head);
+    debugStream(debug, 'socket', socket);
+    socket.pipe(upstream);
+    debugStream(debug, 'upstream', upstream);
+    upstream.pipe(socket);
   });
   const addr = await listen(server, 3000);
   console.log(addr);
