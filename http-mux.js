@@ -46,7 +46,7 @@ async function main({ upstreamHost, upstreamPort, port }) {
     }
   );
   const addr = await listen(server, port);
-  console.log('http-mux WebSocket server listening at %s', addr);
+  console.log('`http-mux` WebSocket server listening at %s', addr);
 }
 
 main(flags).catch(err => {

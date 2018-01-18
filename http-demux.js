@@ -42,7 +42,7 @@ async function main({ target, port }) {
     debugStream(debug, 'socket', socket);
   });
   const addr = await listen(server, port);
-  console.log(addr);
+  console.log('`http-demux` TCP server listening at %s', addr);
 }
 
 main(flags).catch(err => {
