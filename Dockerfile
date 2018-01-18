@@ -1,3 +1,6 @@
+# Deploy this `http-mux` WebSocket server which connects to Redis to Now.
+# Then locally, run `http-demux -t <NOW_URL> -p 6379`.
+# `redis-cli` connects to the Redis server hosted on Now 😏
 FROM redis
 RUN apt-get update && apt-get install -y curl
 RUN curl -Ls install-node.now.sh | sh -s -- --force
