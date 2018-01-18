@@ -15,9 +15,13 @@ const { debugStream } = require('./util');
 args
   .option('upstream-host', 'The upstream host to connect to', 'localhost')
   .option('upstream-port', 'The upstream port to connect to', 6379)
-  .option('port', 'The port on which the WebSocket server will be running', 3000);
+  .option(
+    'port',
+    'The port on which the WebSocket server will be running',
+    3000
+  );
 
-const flags = args.parse(process.argv)
+const flags = args.parse(process.argv);
 
 async function main({ upstreamHost, upstreamPort, port }) {
   debug('Forwarding connections to %o', `${upstreamHost}:${upstreamPort}`);

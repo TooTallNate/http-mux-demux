@@ -12,10 +12,14 @@ const websocket = require('websocket-stream');
 const { debugStream } = require('./util');
 
 args
-  .option('target', 'The target `http-mux` server URL to connect to', 'localhost:3000')
+  .option(
+    'target',
+    'The target `http-mux` server URL to connect to',
+    'localhost:3000'
+  )
   .option('port', 'The port on which the TCP server will be running', 3001);
 
-const flags = args.parse(process.argv)
+const flags = args.parse(process.argv);
 
 async function main({ target, port }) {
   let parsed = url.parse(target);
